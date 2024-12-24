@@ -2,14 +2,55 @@ jQuery(document).ready(function ($) {
 
     'use strict';
 
-    /************** Mixitup (Filter Projects) *********************/
-    $('.projects-holder').mixitup({
-        effects: ['fade', 'grayscale'],
-        easing: 'snap',
-        transitionSpeed: 400
-    });
-
     $(document).ready(function () {
+        /************** Mixitup (Filter Projects) *********************/
+        $('.projects-holder').mixitup({
+            effects: ['fade', 'grayscale'],
+            easing: 'snap',
+            transitionSpeed: 400
+        });
+
+        /*************************************************************/
+        $('#form-submit').click(function(e) {
+            var checkClose, checkLoaded, event, href, i, len, loadEvents, results, t, wndw;
+            e.preventDefault();
+            var email = $('#email')[0].value;
+            var subject = $('#subject')[0].value;
+            var message = $('#message')[0].value;
+            href = 'mailto:' + email + '?subject=' + subject + '&body=' + message;
+            console.log(href);
+            wndw = window.open(href, 'mail');
+            checkClose = function () {
+                console.log('checkClose');
+                try {
+                    wndw.location.href;
+                    return wndw.close();
+                } catch (error) {
+                    return console.log('webmail');
+                }
+            };
+            t = setTimeout(checkClose, 5000);
+            try {
+                checkLoaded = function () {
+                    console.log('loaded');
+                    clearTimeout(t);
+                    return t = setTimeout(checkClose, 2000);
+                };
+                wndw.onload = checkLoaded;
+                loadEvents = ["DomContentLoaded", "load", "beforeunload", "unload"];
+                results = [];
+                for (i = 0, len = loadEvents.length; i < len; i++) {
+                    event = loadEvents[i];
+                    results.push(wndw.addEventListener(event, checkLoaded));
+                }
+                return results;
+            } catch (error) {
+                return checkLoaded();
+            }
+        });
+
+
+        /************** Inoagents Table Loading *********************/
         $.ajax({
             type: 'GET',
             crossDomain: true,
@@ -39,10 +80,10 @@ jQuery(document).ready(function ($) {
                 $("<tbody>", {
                     html: items.join("")
                 }).appendTo("#inoagents");
-        
+
                 //$('#inoagents').DataTable();
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error('Error:', error);
             }
         });
