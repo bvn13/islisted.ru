@@ -55,7 +55,7 @@ jQuery(document).ready(function ($) {
             type: 'GET',
             crossDomain: true,
             dataType: 'json',
-            url: 'http://localhost:8080/get-preview-records',
+            url: 'https://api.islisted.ru/get-preview-records',
             success: function (data) {
                 var items = [];
                 $.each(data, function (i, item) {
@@ -80,8 +80,6 @@ jQuery(document).ready(function ($) {
                 $("<tbody>", {
                     html: items.join("")
                 }).appendTo("#inoagents");
-
-                //$('#inoagents').DataTable();
             },
             error: function (xhr, status, error) {
                 console.error('Error:', error);
